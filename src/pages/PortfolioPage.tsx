@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rocket, Menu, X, Play, Clock, User, ArrowLeft } from 'lucide-react';
-import { portfolioVideos, categories, Category } from '../components/portfolioData';
+import { portfolioVideos, categories, Category, PortfolioVideo } from '../components/portfolioData';
+import VideoPlayerModal from '../components/VideoPlayerModal';
 import Footer from '../components/Footer';
 
 const PortfolioPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<PortfolioVideo | null>(null);
 
   const filtered =
     activeCategory === 'All'
@@ -161,9 +163,10 @@ const PortfolioPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map((video) => (
-              <div
+              <button
                 key={video.id}
-                className="group relative cursor-pointer"
+                onClick={() => video.videoUrl && setSelectedVideo(video)}
+                className="group relative cursor-pointer text-left w-full"
                 onMouseEnter={() => setHoveredId(video.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
@@ -212,7 +215,7 @@ const PortfolioPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
@@ -246,6 +249,14 @@ const PortfolioPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Video Player Modal */}
+      <VideoPlayerModal
+        isOpen={!!selectedVideo}
+        videoUrl={selectedVideo?.videoUrl || ''}
+        title={selectedVideo?.title || ''}
+        onClose={() => setSelectedVideo(null)}
+      />
 
       <Footer />
     </div>

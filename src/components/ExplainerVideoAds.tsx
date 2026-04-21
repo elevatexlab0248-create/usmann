@@ -1,19 +1,20 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import VideoPlayerModal from './VideoPlayerModal';
 
 interface Video {
   id: number;
   title: string;
   thumbnail: string;
+  videoUrl: string;
 }
 
 const videos: Video[] = [
-  { id: 1, title: 'Video Ad 1', thumbnail: 'https://images.pexels.com/photos/3587620/pexels-photo-3587620.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { id: 2, title: 'Video Ad 2', thumbnail: 'https://images.pexels.com/photos/3938022/pexels-photo-3938022.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { id: 3, title: 'Video Ad 3', thumbnail: 'https://images.pexels.com/photos/3714901/pexels-photo-3714901.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { id: 4, title: 'Video Ad 4', thumbnail: 'https://images.pexels.com/photos/3747465/pexels-photo-3747465.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { id: 5, title: 'Video Ad 5', thumbnail: 'https://images.pexels.com/photos/3975517/pexels-photo-3975517.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { id: 6, title: 'Video Ad 6', thumbnail: 'https://images.pexels.com/photos/3848382/pexels-photo-3848382.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { id: 1, title: 'Explainer Video 1', thumbnail: 'https://images.pexels.com/photos/3587620/pexels-photo-3587620.jpeg?auto=compress&cs=tinysrgb&w=600', videoUrl: 'https://drive.google.com/file/d/1Ef2L6G-8WD2c9Yd3OmUWQ6u8UsIdSg0p/preview' },
+  { id: 2, title: 'Explainer Video 2', thumbnail: 'https://images.pexels.com/photos/3938022/pexels-photo-3938022.jpeg?auto=compress&cs=tinysrgb&w=600', videoUrl: 'https://drive.google.com/file/d/1AUjJeloJkeoNmLsSUF_U31XvqO886duh/preview' },
+  { id: 3, title: 'Explainer Video 3', thumbnail: 'https://images.pexels.com/photos/3588365/pexels-photo-3588365.jpeg?auto=compress&cs=tinysrgb&w=600', videoUrl: 'https://drive.google.com/file/d/1a3AOorp4UAHohlrXSPhJ6Q0NRNtBwcPt/preview' },
+  { id: 4, title: 'Explainer Video 4', thumbnail: 'https://images.pexels.com/photos/3714901/pexels-photo-3714901.jpeg?auto=compress&cs=tinysrgb&w=600', videoUrl: 'https://drive.google.com/file/d/1uWaj1ne93JxU2TsTuwpguH7t9GEqqapm/preview' },
+  { id: 5, title: 'Explainer Video 5', thumbnail: 'https://images.pexels.com/photos/3747465/pexels-photo-3747465.jpeg?auto=compress&cs=tinysrgb&w=600', videoUrl: 'https://drive.google.com/file/d/15T6LHJ8KT3jWCHYITY9K4o8GGzOKIUXZ/preview' },
 ];
 
 const VISIBLE_DESKTOP = 3;
@@ -22,6 +23,7 @@ const VISIBLE_MOBILE = 1;
 const ExplainerVideoAds: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   const isMobile = () => window.innerWidth < 768;
 
@@ -77,7 +79,10 @@ const ExplainerVideoAds: React.FC = () => {
                 data-video-item
                 className="flex-shrink-0 w-[75vw] md:w-[calc(33.333%-11px)] max-w-[260px] md:max-w-none"
               >
-                <div className="group relative">
+                <button
+                  onClick={() => setSelectedVideo(video)}
+                  className="group relative w-full text-left"
+                >
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 bg-black transition-all duration-300 hover:border-white/20 hover:shadow-[0_0_24px_rgba(77,192,53,0.12)]">
                     <img
                       src={video.thumbnail}
@@ -94,7 +99,7 @@ const ExplainerVideoAds: React.FC = () => {
                       <h3 className="text-white font-semibold text-xs md:text-sm">{video.title}</h3>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
             ))}
           </div>
@@ -167,6 +172,14 @@ const ExplainerVideoAds: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Video Player Modal */}
+      <VideoPlayerModal
+        isOpen={!!selectedVideo}
+        videoUrl={selectedVideo?.videoUrl || ''}
+        title={selectedVideo?.title || ''}
+        onClose={() => setSelectedVideo(null)}
+      />
     </section>
   );
 };
